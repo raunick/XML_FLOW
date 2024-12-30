@@ -1,6 +1,6 @@
 # 🌟 XML to Flow
 
-Bem-vindo ao **XML to Flow**! 🚀 Este é um projeto incrível que transforma arquivos XML em gráficos interativos e editáveis, tornando sua experiência muito mais visual e divertida! 😄
+Bem-vindo ao **XML to Flow - TASY**! 🚀 Este é um projeto incrível que transforma arquivos XML em gráficos interativos e editáveis, tornando sua experiência muito mais visual e divertida! 😄
 
 ## ✨ Funcionalidades
 
@@ -45,7 +45,7 @@ Bem-vindo ao **XML to Flow**! 🚀 Este é um projeto incrível que transforma a
 
 1. Clone o repositório:
    ```bash
-   git clone <URL_DO_REPOSITORIO>
+   git clone https://github.com/raunick/XML_FLOW
    ```
 
 2. Instale as dependências:
