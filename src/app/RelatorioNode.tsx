@@ -3,6 +3,7 @@ import { Handle, Position } from "@xyflow/react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface XMLChildElement {
   name: string;
@@ -81,6 +82,7 @@ const RelatorioNode: React.FC<RelatorioNodeProps> = ({
       </div>
 
       {isExpanded && (
+        
         <div className="mt-2">
           <Table>
             <TableHeader>
@@ -90,23 +92,6 @@ const RelatorioNode: React.FC<RelatorioNodeProps> = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {/* Renderiza os atributos */}
-              {Object.entries(formData.attributes).map(([key, value]) => (
-                <TableRow key={key}>
-                  <TableCell className="font-medium">
-                    {key}
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      value={value}
-                      onChange={(e) => handleAttributeChange(key, e.target.value)}
-                      onClick={(e) => e.stopPropagation()}
-                      className="w-full"
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-              
               {/* Renderiza os elementos filhos */}
               {formData.children.map((child, index) => (
                 <TableRow key={child.name}>
@@ -119,10 +104,26 @@ const RelatorioNode: React.FC<RelatorioNodeProps> = ({
                       onChange={(e) => handleChildChange(index, e.target.value)}
                       onClick={(e) => e.stopPropagation()}
                       className={
-                        child.name === "DS_SQL" 
+                        child.name === "DS_SQL"
                           ? "w-full min-h-[100px] mt-1 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none bg-gray-900 text-green-300 font-mono border border-gray-600 focus:ring-2 focus:ring-indigo-500 resize-none"
-                          :  "w-full min-h-[100px]" 
+                          : "w-full min-h-[100px]" 
                       }
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+              {/* Renderiza os atributos */}
+              {Object.entries(formData.attributes).map(([key, value]) => (
+                <TableRow key={key}>
+                  <TableCell className="font-medium">
+                    {key}
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      value={value}
+                      onChange={(e) => handleAttributeChange(key, e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-full"
                     />
                   </TableCell>
                 </TableRow>

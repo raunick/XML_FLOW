@@ -196,6 +196,59 @@ const App: React.FC<AppProps> = ({ onError, onSuccess }) => {
     return { newNodes, nodeMap };
   };
 
+  const determineXMLType = (xmlDoc: Document): 'relatorio' | 'template' => {
+    // Pega o elemento raiz do XML
+    const rootElement = xmlDoc.documentElement;
+    
+    // Verifica o nome do elemento raiz em maiúsculo para evitar problemas de case
+    const rootName = rootElement.tagName.toUpperCase();
+    
+    // Retorna o tipo baseado no elemento raiz
+    if (rootName === 'RELATORIOS') {
+      return 'relatorio';
+    } else if (rootName === 'TEMPLATE') {
+      return 'template';
+    }
+    
+    // Se não for nenhum dos tipos esperados, lança um erro
+    throw new Error('XML inválido: Deve começar com Relatorios ou Template');
+  };
+// criar função para templates
+const createEdgesTemplate = (xmlDoc: Document, nodeMap: Record<string, string>) => {
+  const tabelas = xmlDoc.getElementsByTagName("Tabela");
+  const newEdges: Edge[] = [];
+
+  Array.from(tabelas).forEach((tabela) => {
+    const registros = tabela.getElementsByTagName("registro");
+    Array.from(registros).forEach((registro) => {
+      const nrSequencia = registro.getAttribute("NR_SEQUENCIA");
+      const nrSeqTemplate = registro.getAttribute("NR_SEQ_TEMPLATE");
+      const nrSeqItem = registro.getAttribute("NR_SEQ_ITEM");
+
+      if (nrSequencia && nrSeqTemplate && nodeMap[nrSeqTemplate]) {
+        newEdges.push({
+          id: `edge-${nrSeqTemplate}-${nrSequencia}`,
+          source: nodeMap[nrSeqTemplate],
+          target: nodeMap[nrSequencia],
+          animated: true,
+          type: ConnectionLineType.Bezier,
+        });
+      } else if (nrSequencia && nrSeqItem && nodeMap[nrSeqItem]) {
+        newEdges.push({
+          id: `edge-${nrSeqItem}-${nrSequencia}`,
+          source: nodeMap[nrSeqItem],
+          target: nodeMap[nrSequencia],
+          animated: true,
+          type: ConnectionLineType.Bezier,
+        });
+      }
+    });
+  });
+
+  return newEdges;
+};
+
+// Função para relatorio - regras para criar as conexões
   const createEdges = (xmlDoc: Document, nodeMap: Record<string, string>) => {
     const tabelas = xmlDoc.getElementsByTagName("Tabela");
     const newEdges: Edge[] = [];
@@ -230,6 +283,9 @@ const App: React.FC<AppProps> = ({ onError, onSuccess }) => {
     return newEdges;
   };
 
+
+
+
   // Event Handlers
   const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsLoading(true);
@@ -246,18 +302,23 @@ const App: React.FC<AppProps> = ({ onError, onSuccess }) => {
 
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(text, "text/xml");
-      
+      // Determina o tipo do XML
+      const xmlType = determineXMLType(xmlDoc);
+
       // Check for parsing errors
       const parserError = xmlDoc.getElementsByTagName("parsererror");
       if (parserError.length > 0) {
         throw new Error("Erro ao processar o arquivo XML");
       }
+      // Usa o tipo apropriado de criação de edges
+      const createEdgesFunction = xmlType === 'relatorio' ? createEdges : createEdgesTemplate;
 
       setXmlDoc(xmlDoc);
       
       const { newNodes, nodeMap } = processXMLNodes(xmlDoc);
-      const newEdges = createEdges(xmlDoc, nodeMap);
-
+      //const newEdges = createEdges(xmlDoc, nodeMap);
+      const newEdges = createEdgesFunction(xmlDoc, nodeMap);
+      
       setNodes(newNodes);
       setEdges(newEdges);
       
