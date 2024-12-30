@@ -110,8 +110,8 @@ nodes: Node<NodeData>[],
 
 const App: React.FC<AppProps> = ({ onError, onSuccess }) => {
   // State
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node<NodeData>[]>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node<NodeData>>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [xmlDoc, setXmlDoc] = useState<Document | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
