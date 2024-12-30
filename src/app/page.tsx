@@ -9,10 +9,8 @@ import {
 } from "@/components/ui/drawer"; 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import Flow from "./flow";
-import { GearIcon, StretchHorizontallyIcon, StretchVerticallyIcon, UploadIcon } from "@radix-ui/react-icons";
+import { GearIcon } from "@radix-ui/react-icons";
 import App from "./App";
-import { Badge } from "@/components/ui/badge"
 
 
 export default function Home() {
