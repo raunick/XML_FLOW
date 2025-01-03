@@ -7,6 +7,7 @@ interface FlowState {
   edges: Edge[];
   xmlDoc: Document | null;
   isLoading: boolean;
+  selectedNodes: Node<NodeData>[];
   setNodes: (nodes: Node<NodeData>[]) => void;
   setEdges: (edges: Edge[]) => void;
   onNodesChange: OnNodesChange;
@@ -14,6 +15,7 @@ interface FlowState {
   onConnect: OnConnect;
   setXmlDoc: (doc: Document | null) => void;
   setIsLoading: (loading: boolean) => void;
+  setSelectedNodes: (nodes: Node<NodeData>[]) => void;
   handleNodeDataChange: (nodeId: string, newData: NodeData) => void;
 }
 
@@ -22,15 +24,21 @@ const useFlowStore = create<FlowState>((set, get) => ({
   edges: [],
   xmlDoc: null,
   isLoading: false,
+  selectedNodes: [],
 
   setNodes: (nodes) => set({ nodes }),
   setEdges: (edges) => set({ edges }),
-
+  setSelectedNodes: (nodes) => set({ selectedNodes: nodes }),
 
   onNodesChange: (changes) => {
-    return set((state) => ({
-        nodes: applyNodeChanges<Node<NodeData>>(changes as NodeChange<Node<NodeData>>[], state.nodes),
-      }));
+    set((state) => {
+      const updatedNodes = applyNodeChanges<Node<NodeData>>(changes as NodeChange<Node<NodeData>>[], state.nodes);
+      const selectedNodes = updatedNodes.filter(node => node.selected);
+      return {
+        nodes: updatedNodes,
+        selectedNodes: selectedNodes,
+      };
+    });
   },
 
   onEdgesChange: (changes) => {
