@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Node, Edge, OnNodesChange, OnEdgesChange, OnConnect, addEdge, ConnectionLineType, applyNodeChanges, applyEdgeChanges } from '@xyflow/react';
+import { Node, Edge, OnNodesChange, OnEdgesChange, OnConnect, addEdge, ConnectionLineType, applyNodeChanges, applyEdgeChanges, NodeChange } from '@xyflow/react';
 import { XMLChildElement, NodeData } from './types';
 
 interface FlowState {
@@ -26,10 +26,11 @@ const useFlowStore = create<FlowState>((set, get) => ({
   setNodes: (nodes) => set({ nodes }),
   setEdges: (edges) => set({ edges }),
 
+
   onNodesChange: (changes) => {
-    set((state) => ({
-      nodes: applyNodeChanges(changes, state.nodes),
-    }));
+    return set((state) => ({
+        nodes: applyNodeChanges<Node<NodeData>>(changes as NodeChange<Node<NodeData>>[], state.nodes),
+      }));
   },
 
   onEdgesChange: (changes) => {
