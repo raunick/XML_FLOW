@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Node, Edge, OnNodesChange, OnEdgesChange, OnConnect, addEdge, ConnectionLineType } from '@xyflow/react';
+import { Node, Edge, OnNodesChange, OnEdgesChange, OnConnect, addEdge, ConnectionLineType, applyNodeChanges, applyEdgeChanges } from '@xyflow/react';
 import { XMLChildElement, NodeData } from './types';
 
 interface FlowState {
@@ -22,28 +22,22 @@ const useFlowStore = create<FlowState>((set, get) => ({
   edges: [],
   xmlDoc: null,
   isLoading: false,
-  
+
   setNodes: (nodes) => set({ nodes }),
   setEdges: (edges) => set({ edges }),
-  
+
   onNodesChange: (changes) => {
     set((state) => ({
-      nodes: changes.reduce((acc, change) => {
-        // @ts-ignore - type inference issue with zustand
-        return applyNodeChanges(change, acc);
-      }, state.nodes),
+      nodes: applyNodeChanges(changes, state.nodes),
     }));
   },
-  
+
   onEdgesChange: (changes) => {
     set((state) => ({
-      edges: changes.reduce((acc, change) => {
-        // @ts-ignore - type inference issue with zustand
-        return applyEdgeChanges(change, acc);
-      }, state.edges),
+      edges: applyEdgeChanges(changes, state.edges),
     }));
   },
-  
+
   onConnect: (connection) => {
     set((state) => ({
       edges: addEdge(
@@ -52,10 +46,10 @@ const useFlowStore = create<FlowState>((set, get) => ({
       ),
     }));
   },
-  
+
   setXmlDoc: (doc) => set({ xmlDoc: doc }),
   setIsLoading: (loading) => set({ isLoading: loading }),
-  
+
   handleNodeDataChange: (nodeId, newData) => {
     set((state) => ({
       nodes: state.nodes.map((node) => {
