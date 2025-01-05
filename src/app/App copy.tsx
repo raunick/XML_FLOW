@@ -26,6 +26,8 @@ import {
   SymbolIcon, 
   UploadIcon,
 } from "@radix-ui/react-icons";
+import PreviewNode from "./PreviewNode";
+import useFlowStore from "./store";
 
 // Constants
 const CONFIG = {
@@ -136,6 +138,9 @@ const App: React.FC<AppProps> = ({ onError, onSuccess }) => {
       customNode: (props: any) => (
         <RelatorioNode {...props} onDataChange={handleNodeDataChange} />
       ),
+      previewNode: (props: { id: string; data: NodeData; isConnectable: boolean }) => (
+        <PreviewNode {...props} onDataChange={handleNodeDataChange} />
+      ),
     }),
     [handleNodeDataChange]
   );
@@ -195,7 +200,21 @@ const App: React.FC<AppProps> = ({ onError, onSuccess }) => {
   
     return { newNodes, nodeMap };
   };
+  const addPreviewNode = () => {
+    const previewNode = {
+      id: `preview-${Date.now()}`,
+      type: 'previewNode',
+      position: { x: 100, y: 100 },
+      data: {
+        label: 'XML Preview',
+        attributes: {},
+        children: []
+      }
+    };
 
+    const currentNodes = useFlowStore.getState().nodes;
+    useFlowStore.getState().setNodes([...currentNodes, previewNode]);
+  };
   const determineXMLType = (xmlDoc: Document): 'relatorio' | 'template' => {
     // Pega o elemento raiz do XML
     const rootElement = xmlDoc.documentElement;
