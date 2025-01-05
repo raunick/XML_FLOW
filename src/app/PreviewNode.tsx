@@ -116,6 +116,7 @@ const PreviewNode: React.FC<PreviewNodeProps> = ({ id, data, isConnectable }) =>
                                                             node.data.children.find(child => child.name === 'DS_BANDA')?.content}
                                                         </CardDescription>
                                                         <CardContent>
+
                                                             {node.data.attributes.NR_SEQ_ELEMENTO === '884' ? (
                                                                 <Select>
                                                                     <SelectTrigger className="w-[180px]">
@@ -138,7 +139,16 @@ const PreviewNode: React.FC<PreviewNodeProps> = ({ id, data, isConnectable }) =>
                                                                     </SelectContent>
                                                                 </Select>
                                                             ) : (
-                                                                <></>
+                                                                <> <ul className="text-sm space-y-1">
+                                                                    {getNodeConnections(node.id).map((childNode: any) => (
+                                                                        //<li key={node.id}>{node.data.attributes.NR_SEQUENCIA}</li>
+                                                                        <li key={childNode.id}>
+                                                                            {xmlType === 'template' ?
+                                                                                <></> :
+                                                                                childNode.data.children.find((childNode: any) => childNode.name === 'DS_CAMPO')?.content}
+                                                                        </li>
+                                                                    ))}
+                                                                </ul></>
                                                             )}
 
                                                         </CardContent>
