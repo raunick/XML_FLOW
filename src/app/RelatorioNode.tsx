@@ -24,6 +24,7 @@ interface RelatorioNodeProps {
   onDataChange?: (nodeId: string, newData: NodeData) => void;
 }
 
+
 const RelatorioNode: React.FC<RelatorioNodeProps> = ({ 
   id, 
   data, 
